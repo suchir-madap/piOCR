@@ -3,11 +3,13 @@ import pytesseract
 from pytesseract import Output
  
 cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+# cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
  
 while True:
     # Capture frame-by-frame
     ret, frame = cap.read()
+
+    frame = cv2.flip(frame, 1)
  
     d = pytesseract.image_to_data(frame, output_type=Output.DICT)
     n_boxes = len(d['text'])
@@ -16,6 +18,7 @@ while True:
             (text, x, y, w, h) = (d['text'][i], d['left'][i], d['top'][i], d['width'][i], d['height'][i])
             # don't show empty text
             if text and text.strip() != "":
+                print(text.strip())
                 frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 frame = cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 3)
  
